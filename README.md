@@ -1,1 +1,1 @@
-## horus-operator
+## ingress-operator
