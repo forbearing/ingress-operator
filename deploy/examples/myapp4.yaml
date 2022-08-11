@@ -1,0 +1,9 @@
+apiVersion: horus.io/v1beta1
+kind: Horus
+metadata:
+  name: myapp4
+spec:
+  image: nginx
+  replicas: 3
+  enable_service: false
+  enable_ingress: false

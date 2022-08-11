@@ -1,0 +1,24 @@
+# permissions for end users to edit horus.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: horus-editor-role
+rules:
+- apiGroups:
+  - horus.io
+  resources:
+  - horus
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - horus.io
+  resources:
+  - horus/status
+  verbs:
+  - get

@@ -1,0 +1,69 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.7.0
+  creationTimestamp: null
+  name: horus.horus.io
+spec:
+  group: horus.io
+  names:
+    kind: Horus
+    listKind: HorusList
+    plural: horus
+    singular: horus
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: Horus is the Schema for the horus API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: HorusSpec defines the desired state of Horus
+            properties:
+              enable_ingress:
+                description: Create service or not
+                type: boolean
+              enable_service:
+                description: Create ingress or not
+                type: boolean
+              image:
+                description: docker image name
+                type: string
+              replicas:
+                description: Number of desired pods.
+                format: int32
+                type: integer
+            required:
+            - image
+            - replicas
+            type: object
+          status:
+            description: HorusStatus defines the observed state of Horus
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

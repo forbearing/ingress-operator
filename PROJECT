@@ -1,0 +1,20 @@
+domain: horus.io
+layout:
+- go.kubebuilder.io/v3
+projectName: horus-controller
+repo: github.com/horus
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: horus.io
+  kind: Horus
+  path: github.com/horus/api/v1beta1
+  version: v1beta1
+  webhooks:
+    conversion: true
+    defaulting: true
+    validation: true
+    webhookVersion: v1
+version: "3"

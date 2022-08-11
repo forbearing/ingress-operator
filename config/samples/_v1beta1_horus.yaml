@@ -1,0 +1,6 @@
+apiVersion: horus.io/v1beta1
+kind: Horus
+metadata:
+  name: horus-sample
+spec:
+  # TODO(user): Add fields here

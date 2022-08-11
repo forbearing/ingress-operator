@@ -1,0 +1,110 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: horus-system
+
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: horus-operator
+  namespace: horus-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: horus-operator
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: [get,list,watch,create,update,delete,patch]
+  - apiGroups: [apps]
+    resources: [deployments,statefulsets,daemonsets]
+    verbs: [get,list,watch,create,update,delete,patch]
+  - apiGroups:  [networking.k8s.io]
+    resources: ["ingresses"]
+    verbs: [get,list,watch,create,update,delete,patch]
+  - apiGroups: [horus.io]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: horus-operator
+  namespace: horus-system
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: horus-operator
+  namespace: horus-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: horus-operator
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: horus-operator
+  namespace: horus-system
+  labels:
+    app: horus-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: horus-operator
+  template:
+    metadata:
+      labels:
+        app: horus-operator
+    spec:
+      serviceAccount: horus-operator
+      containers:
+      - name: horus-operator
+        image: hybfkuf/horus-operator:latest
+        imagePullPolicy: Always
+        ports:
+        - name: tcp-probe
+          containerPort: 8081
+        - name: http-metrics
+          containerPort: 8080
+        livenessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 5
+          failureThreshold: 3
+          timeoutSeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+        readinessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 3
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: horus-operator
+  namespace: horus-system
+  labels:
+    app: horus-operator
+spec:
+  selector:
+    app: horus-operator
+  ports:
+  - name: tcp-probe
+    port: 8080
+    targetPort: 8080
+  - name: http-metrics
+    port: 8081
+    targetPort: 8081
